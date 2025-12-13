@@ -63,6 +63,7 @@ body {
 .playing .spool::after { animation: spin 3s linear infinite; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
+
 .digital-label {
     position: absolute; top: 14.8%; left: 58.5%; transform: translateX(-50%);
     width: 53%; height: 14%; background: rgba(249, 246, 242, 0.95);
@@ -70,6 +71,7 @@ body {
     display: flex; align-items: center; justify-content: center;
     border-radius: 4px; overflow: hidden; white-space: nowrap; z-index: 15;
 }
+
 
 /* --- CONTROLS (RIGHT) --- */
 .panel-right {
@@ -84,6 +86,7 @@ body {
     max-height: 85vh; /* Prevent it from growing infinitely */
 }
 
+
 .header-row { 
     display: flex; 
     justify-content: space-between; 
@@ -95,6 +98,7 @@ body {
 .header-title { font-size: 0.9rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
 .status-led { width: 10px; height: 10px; background: #bbb; border-radius: 50%; border: 1px solid #999; }
 .status-led.active { background: #ff4757; box-shadow: 0 0 8px #ff4757; border-color: #d63031; }
+
 
 /* --- COMPACT SLIDERS --- */
 .slider-container { 
@@ -115,6 +119,7 @@ body {
     margin-bottom: 2px; 
 }
 
+
 /* SLIDER STYLING (Visible + Narrow) */
 input[type=range] {
     -webkit-appearance: none; 
@@ -126,6 +131,7 @@ input[type=range] {
     cursor: pointer; 
     display: block;
 }
+
 
 /* Chrome/Safari/Edge/Opera */
 input[type=range]::-webkit-slider-runnable-track {
@@ -147,6 +153,7 @@ input[type=range]::-webkit-slider-thumb {
     box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
+
 /* Firefox */
 input[type=range]::-moz-range-track {
     width: 100%; 
@@ -163,6 +170,7 @@ input[type=range]::-moz-range-thumb {
     background: #ff6b6b; 
     border: 1px solid #000;
 }
+
 
 /* --- LANGUAGE SELECTOR --- */
 .option-row { 
@@ -181,6 +189,7 @@ select {
     font-weight: bold; 
     font-size: 0.65rem;
 }
+
 
 /* --- BUTTONS --- */
 .btn-group { 
@@ -214,6 +223,7 @@ button:active {
     border-color: #c0392b; 
 }
 
+
 #status-log { 
     margin-top: 5px; 
     font-size: 0.6rem; 
@@ -224,12 +234,14 @@ button:active {
     text-overflow: ellipsis; 
 }
 
+/* --- INVISIBLE SCANNER --- */
 #scanner-overlay { 
-    position: absolute; 
+    position: fixed; 
     top: 0; left: 0; 
     width: 100%; height: 100%; 
-    background: #000; 
-    z-index: 50; 
+    z-index: -1;  /* Behind everything */
+    opacity: 0;   /* Invisible */
+    pointer-events: none; /* Click-through */
     display: none; 
 }
 #player-hide { display: none; }
