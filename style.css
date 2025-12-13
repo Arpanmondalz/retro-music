@@ -1,0 +1,248 @@
+/* --- VARIABLES --- */
+:root {
+    --bg-color: #f0e6d2;      
+    --ink-color: #2b2b2b;     
+    --accent-color: #ff6b6b;  
+    --spool-white: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    background-color: var(--bg-color);
+    color: var(--ink-color);
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0; 
+    width: 100vw;
+    min-height: 100vh; 
+    overflow-x: hidden;
+    overflow-y: auto; /* Allow scrolling */
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    padding: 10px;
+}
+
+/* --- MAIN DASHBOARD --- */
+.dashboard {
+    display: grid; 
+    grid-template-columns: 1fr 1fr; /* Equal split for mobile */
+    width: 95vw; 
+    max-width: 900px; 
+    gap: 15px; 
+    padding: 10px;
+    height: auto; /* Let it grow naturally */
+}
+
+/* --- VISUALS (LEFT) --- */
+.panel-left { 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    position: relative; 
+}
+.cassette-wrapper { 
+    position: relative; 
+    width: 100%; 
+    aspect-ratio: 1.55; 
+}
+.cassette-bg { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+
+.spool {
+    position: absolute; width: 14%; height: 22%; top: 48%; transform: translateY(-50%);
+    background: var(--spool-white); border: 2px solid var(--ink-color); border-radius: 50%; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+}
+.spool::after {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-conic-gradient(var(--spool-white) 0deg 20deg, var(--ink-color) 20deg 30deg);
+    border-radius: 50%; mask: radial-gradient(transparent 35%, black 36%); -webkit-mask: radial-gradient(transparent 35%, black 36%);
+}
+.left-spool { left: 23%; } 
+.right-spool { right: 23%; }
+.playing .spool::after { animation: spin 3s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+.digital-label {
+    position: absolute; top: 14.8%; left: 58.5%; transform: translateX(-50%);
+    width: 53%; height: 14%; background: rgba(249, 246, 242, 0.95);
+    color: #281c0a; font-weight: bold; font-size: 0.75rem;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; overflow: hidden; white-space: nowrap; z-index: 15;
+}
+
+/* --- CONTROLS (RIGHT) --- */
+.panel-right {
+    display: flex; 
+    flex-direction: column; 
+    padding: 12px; 
+    background: rgba(255,255,255,0.7); 
+    border-radius: 12px; 
+    border: 2px solid var(--ink-color);
+    /* Allow scrolling inside this panel if content overflows */
+    overflow-y: auto;
+    max-height: 85vh; /* Prevent it from growing infinitely */
+}
+
+.header-row { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    border-bottom: 2px solid var(--ink-color); 
+    padding-bottom: 5px; 
+    margin-bottom: 10px;
+}
+.header-title { font-size: 0.9rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+.status-led { width: 10px; height: 10px; background: #bbb; border-radius: 50%; border: 1px solid #999; }
+.status-led.active { background: #ff4757; box-shadow: 0 0 8px #ff4757; border-color: #d63031; }
+
+/* --- COMPACT SLIDERS --- */
+.slider-container { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+    margin-bottom: 10px; 
+}
+.slider-row { 
+    display: flex; 
+    flex-direction: column; 
+}
+.label-row { 
+    display: flex; 
+    justify-content: space-between; 
+    font-size: 0.6rem; 
+    font-weight: bold; 
+    margin-bottom: 2px; 
+}
+
+/* SLIDER STYLING (Visible + Narrow) */
+input[type=range] {
+    -webkit-appearance: none; 
+    appearance: none; 
+    width: 100%; 
+    background: transparent; 
+    margin: 3px 0; 
+    height: 12px; /* Thinner overall height */
+    cursor: pointer; 
+    display: block;
+}
+
+/* Chrome/Safari/Edge/Opera */
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%; 
+    height: 5px; /* Thinner track */
+    background: #999; 
+    border: 1px solid #000; 
+    border-radius: 3px;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; 
+    appearance: none;
+    height: 14px; /* Smaller thumb */
+    width: 14px; 
+    border-radius: 50%;
+    background: #ff6b6b; 
+    border: 1px solid #000;
+    margin-top: -5px; 
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Firefox */
+input[type=range]::-moz-range-track {
+    width: 100%; 
+    height: 5px; 
+    background: #999; 
+    border: 1px solid #000; 
+    border-radius: 3px;
+}
+input[type=range]::-moz-range-thumb {
+    height: 14px; 
+    width: 14px; 
+    border: none; 
+    border-radius: 50%;
+    background: #ff6b6b; 
+    border: 1px solid #000;
+}
+
+/* --- LANGUAGE SELECTOR --- */
+.option-row { 
+    display: flex; 
+    gap: 5px; 
+    align-items: center; 
+    font-weight: bold; 
+    font-size: 0.7rem; 
+    margin-bottom: 10px; 
+}
+select { 
+    padding: 5px; 
+    border-radius: 4px; 
+    border: 1px solid var(--ink-color); 
+    flex-grow: 1; 
+    font-weight: bold; 
+    font-size: 0.65rem;
+}
+
+/* --- BUTTONS --- */
+.btn-group { 
+    display: flex; 
+    gap: 5px; 
+    flex-wrap: wrap; /* Allows wrapping if too narrow */
+    margin-bottom: 5px;
+}
+button { 
+    flex: 1; 
+    min-width: 60px; /* Ensures they don't get too tiny */
+    padding: 10px 4px; 
+    font-weight: bold; 
+    font-size: 0.65rem; 
+    border: 1px solid var(--ink-color); 
+    background: #fff; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    box-shadow: 2px 2px 0 var(--ink-color); 
+}
+button:active { 
+    transform: translate(1px, 1px); 
+    box-shadow: 1px 1px 0 var(--ink-color); 
+}
+.btn-primary { 
+    background: var(--accent-color); 
+    color: #fff; 
+}
+.btn-stop { 
+    color: #c0392b; 
+    border-color: #c0392b; 
+}
+
+#status-log { 
+    margin-top: 5px; 
+    font-size: 0.6rem; 
+    color: #555; 
+    text-align: center; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+
+#scanner-overlay { 
+    position: absolute; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%; 
+    background: #000; 
+    z-index: 50; 
+    display: none; 
+}
+#player-hide { display: none; }
+
+
+/* --- MOBILE PORTRAIT FALLBACK --- */
+@media (max-width: 600px) and (orientation: portrait) {
+    .dashboard { 
+        grid-template-columns: 1fr; 
+        gap: 10px;
+    }
+    .panel-left { 
+        width: 80%; 
+        margin: 0 auto; 
+    }
+}
