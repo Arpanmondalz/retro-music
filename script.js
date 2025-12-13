@@ -42,7 +42,26 @@ async function synthesizeTrack() {
     // Your Cloudflare Worker URL 
     const WORKER_URL = 'https://retro-music.arpanmondal-ae18.workers.dev';
     
-    const prompt = `Recommend ONE unique song (JSON format only: { "track": "Title", "artist": "Artist" }). Params: Energy ${energy}%, Mood ${valence}%, Lang ${language}, Texture ${texture}%, Vocal ${vocal}%`;
+    const prompt = `
+        Role: You are an expert music curator and audiophile DJ.
+        Task: Select exactly ONE track that perfectly matches the following sonic signature.
+        
+        Sonic Signature:
+        - Energy: ${energy}% (0=Ambient/Drone, 50=Groovy, 100=High-Octane/Aggressive)
+        - Mood: ${valence}% (0=Melancholic/Dark, 50=Neutral, 100=Euphoric/Uplifting)
+        - Texture: ${texture}% (0=Purely Synthetic/Electronic, 50=Hybrid, 100=Acoustic/Organic/Folk)
+        - Vocals: ${vocal}% (0=Instrumental, 50=Sparse/Chopped, 100=Lyrical/Song)
+        - Language/Region: ${language}
+
+        Selection Criteria:
+        1. NO generic top 40 hits. Find hidden gems, cult classics, or critically acclaimed tracks.
+        2. If Language is 'Any', prioritize music from non-Western regions (Japan, Brazil, India, West Africa).
+        3. Match the 'Texture' strictly. If Texture is 0%, do not pick a rock song. If Texture is 100%, do not pick Techno.
+
+        Output Requirement:
+        Return ONLY valid JSON. No markdown, no conversation.
+        Format: { "track": "Exact Track Title", "artist": "Exact Artist Name" }
+    `;
 
     try {
         // 1. Call Your Worker (No API Key Exposed!)
@@ -121,3 +140,4 @@ function toggleScanner() {
         alert("Camera Error (Use HTTPS): " + err);
     });
 }
+
