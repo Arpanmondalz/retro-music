@@ -7,6 +7,8 @@ function playTrack(videoId, title) {
     document.getElementById('cassette-unit').classList.add('playing');
     document.getElementById('status-log').innerText = "PLAYING: " + titleClean;
 
+    requestWakeLock(); 
+
     const origin = window.location.origin;
     const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&list=RD${videoId}&enablejsapi=1&origin=${origin}`;
     
@@ -140,4 +142,33 @@ function toggleScanner() {
         alert("Camera Error (Use HTTPS): " + err);
     });
 }
+
+// --- 4. SCREEN WAKE LOCK ---
+let wakeLock = null;
+
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      wakeLock = await navigator.wakeLock.request('screen');
+      console.log('Screen Wake Lock Active');
+      
+      // If the user minimizes/switches tabs, the lock releases.
+      // Re-acquire it when they come back.
+      wakeLock.addEventListener('release', () => {
+        console.log('Wake Lock Released');
+      });
+    }
+  } catch (err) {
+    console.error(`${err.name}, ${err.message}`);
+  }
+}
+
+// Handle visibility change (if user switches apps and comes back)
+document.addEventListener('visibilitychange', async () => {
+  if (wakeLock !== null && document.visibilityState === 'visible') {
+    await requestWakeLock();
+  }
+});
+
+
 
