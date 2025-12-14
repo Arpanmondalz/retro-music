@@ -3,8 +3,8 @@
   "short_name": "MoodTotem",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#f0e6d2",
-  "theme_color": "#f0e6d2",
+  "background_color": "#121212",
+  "theme_color": "#121212",
   "orientation": "landscape",
   "icons": [
     {
