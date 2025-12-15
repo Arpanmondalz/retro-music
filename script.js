@@ -152,21 +152,32 @@ function toggleScanner() {
 let wakeLock = null;
 
 async function requestWakeLock() {
-  try {
-    if ('wakeLock' in navigator) {
-      wakeLock = await navigator.wakeLock.request('screen');
-      console.log('Screen Wake Lock Active');
-      
-      // If the user minimizes/switches tabs, the lock releases.
-      // Re-acquire it when they come back.
-      wakeLock.addEventListener('release', () => {
-        console.log('Wake Lock Released');
-      });
+    try {
+        if ('wakeLock' in navigator) {
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log('Screen Wake Lock Active');
+            
+            wakeLock.addEventListener('release', () => {
+                console.log('Wake Lock Released');
+            });
+        }
+    } catch (err) {
+        console.error(`Wake Lock Error: ${err.name}, ${err.message}`);
     }
-  } catch (err) {
-    console.error(`${err.name}, ${err.message}`);
-  }
 }
+
+// 1. Re-acquire lock if user comes back to the tab
+document.addEventListener('visibilitychange', async () => {
+    if (wakeLock !== null && document.visibilityState === 'visible') {
+        await requestWakeLock();
+    }
+});
+
+// 2. Force lock on ANY interaction (clicks/taps) to ensure browser permission
+document.addEventListener('click', () => {
+    if (!wakeLock) requestWakeLock();
+});
+
 
 // Handle visibility change (if user switches apps and comes back)
 document.addEventListener('visibilitychange', async () => {
