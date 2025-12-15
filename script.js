@@ -35,34 +35,36 @@ async function synthesizeTrack() {
     const log = document.getElementById('status-log');
     log.innerText = "CONTACTING AI...";
     
-    const energy = document.getElementById('energy').value;
-    const valence = document.getElementById('valence').value;
-    const texture = document.getElementById('acoustic').value;
-    const vocal = document.getElementById('vocal').value;
+    const energy = document.getElementById('energy').value;     // Calm <-> Intense
+    const valence = document.getElementById('valence').value;   // Sad <-> Happy
+    const nostalgia = document.getElementById('nostalgia').value; // Modern <-> Retro
+    const vocal = document.getElementById('vocal').value;       // Instrumental <-> Lyrical
+    const discovery = document.getElementById('discovery').value; // Pop <-> Hidden Gem
     const language = document.getElementById('lang-select').value;
     
     // Your Cloudflare Worker URL 
     const WORKER_URL = 'https://retro-music.arpanmondal-ae18.workers.dev';
     
     const prompt = `
-        Role: You are an expert music curator and audiophile DJ.
-        Task: Select exactly ONE track that perfectly matches the following sonic signature.
-        
-        Sonic Signature:
-        - Energy: ${energy}% (0=Ambient/Drone, 50=Groovy, 100=High-Octane/Aggressive)
-        - Mood: ${valence}% (0=Melancholic/Dark, 50=Neutral, 100=Euphoric/Uplifting)
-        - Texture: ${texture}% (0=Purely Synthetic/Electronic, 50=Hybrid, 100=Acoustic/Organic/Folk)
-        - Vocals: ${vocal}% (0=Instrumental, 50=Sparse/Chopped, 100=Lyrical/Song)
-        - Language/Region: ${language}
+    Role: You are an expert music curator and audiophile DJ with deep knowledge of global music history.
+    Task: Recommend exactly ONE track that perfectly matches the following "Sonic Fingerprint".
 
-        Selection Criteria:
-        1. NO generic top 40 hits. Find hidden gems, cult classics, or critically acclaimed tracks.
-        2. If Language is 'Any', prioritize music from non-Western regions (Japan, Brazil, India, West Africa).
-        3. Match the 'Texture' strictly. If Texture is 0%, do not pick a rock song. If Texture is 100%, do not pick Techno.
+    Sonic Fingerprint:
+    1. Energy Level: ${energy}% (0=Sleep/Ambient, 50=Groove, 100=Chaos/Rage)
+    2. Emotional Valence: ${valence}% (0=Depressive/Dark, 50=Neutral, 100=Euphoric/Joyful)
+    3. Era/Vibe: ${nostalgia}% (0=Futuristic/2024, 50=Timeless, 100=Vintage/80s/90s/Oldies)
+    4. Vocal Presence: ${vocal}% (0=Pure Instrumental, 100=Lyrical/Storytelling)
+    5. Obscurity: ${discovery}% (0=Mainstream Hit, 100=Deep Cut/Underground/Indie)
+    6. Region/Language: ${language}
 
-        Output Requirement:
-        Return ONLY valid JSON. No markdown, no conversation.
-        Format: { "track": "Exact Track Title", "artist": "Exact Artist Name" }
+    Curator Rules:
+    - If "Obscurity" is > 80%, DO NOT pick a song with >100M views. Dig deep.
+    - If "Language" is 'Any', prioritize non-English tracks that fit the vibe (e.g., Hindi, Kannada, Tamil, Bengali).
+    - STRICTLY respect the "Vocal" slider. If 0%, track must have NO words.
+
+    Output Requirement:
+    Return ONLY valid JSON. No markdown.
+    Format: { "track": "Exact Track Title", "artist": "Exact Artist Name" }
     `;
 
     try {
@@ -122,8 +124,10 @@ async function synthesizeTrack() {
 let html5QrcodeScanner;
 function toggleScanner() {
     const overlay = document.getElementById('scanner-overlay');
+    // Keep it invisible - no preview shown
     overlay.style.display = 'block';
-
+    overlay.style.opacity = '0';
+    overlay.style.pointerEvents = 'none';
     html5QrcodeScanner = new Html5Qrcode("scanner-overlay");
     html5QrcodeScanner.start(
         { facingMode: "environment" },

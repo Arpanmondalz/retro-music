@@ -45,24 +45,36 @@
                 <div class="status-led" id="led"></div>
             </div>
 
+            <!-- ENERGY (Calm -> Intense) -->
             <div class="slider-container">
-                <div class="slider-row">
-                    <div class="label-row"><span>ENERGY</span><span>LOW — HIGH</span></div>
-                    <input type="range" id="energy" value="50">
-                </div>
-                <div class="slider-row">
-                    <div class="label-row"><span>EMOTION</span><span>SAD — HAPPY</span></div>
-                    <input type="range" id="valence" value="50">
-                </div>
-                <div class="slider-row">
-                    <div class="label-row"><span>TEXTURE</span><span>SYNTH — ORG</span></div>
-                    <input type="range" id="acoustic" value="50">
-                </div>
-                <div class="slider-row">
-                    <div class="label-row"><span>VOCALS</span><span>INST — SONG</span></div>
-                    <input type="range" id="vocal" value="50">
-                </div>
+                <div class="label-row"><span>CALM</span><span>INTENSE</span></div>
+                <input type="range" id="energy" min="0" max="100" value="50">
             </div>
+
+            <!-- VALENCE (Sad -> Happy) -->
+            <div class="slider-container">
+                <div class="label-row"><span>MELANCHOLY</span><span>EUPHORIA</span></div>
+                <input type="range" id="valence" min="0" max="100" value="50">
+            </div>
+
+            <!-- NOSTALGIA (Modern -> Retro) - REPLACES TEXTURE -->
+            <div class="slider-container">
+                <div class="label-row"><span>MODERN</span><span>RETRO</span></div>
+                <input type="range" id="nostalgia" min="0" max="100" value="50">
+            </div>
+
+            <!-- VOCALS (Inst -> Lyrical) -->
+            <div class="slider-container">
+                <div class="label-row"><span>INSTRUMENTAL</span><span>LYRICAL</span></div>
+                <input type="range" id="vocal" min="0" max="100" value="50">
+            </div>
+
+            <!-- OBSCURITY (Pop -> Underground) -->
+            <div class="slider-container">
+                <div class="label-row"><span>POPULAR</span><span>HIDDEN GEM</span></div>
+                <input type="range" id="disovery" min="0" max="100" value="20">
+            </div>
+
 
             <div class="option-row">
                 <label>LANG:</label>
@@ -71,13 +83,15 @@
                     <option value="English">English</option>
                     <option value="Bengali">Bengali</option>
                     <option value="Tamil">Tamil</option>
+                    <option value="Telugu">Telugu</option>
+                    <option value="Kannada">Kannada</option>
                     <option value="Instrumental">No Language</option>
                     <option value="Any">Surprise Me</option>
                 </select>
             </div>
 
             <div class="btn-group">
-                <button class="btn-primary" onclick="synthesizeTrack()">SCAN TAPE</button>
+                <button class="btn-primary" onclick="toggleScanner()">SCAN TAPE</button>
                 <button class="btn-primary" onclick="synthesizeTrack()">SYNTHESIZE</button>
                 <button onclick="synthesizeTrack()">⏭ SKIP</button>
                 <button class="btn-stop" onclick="stopTrack()">STOP</button>
