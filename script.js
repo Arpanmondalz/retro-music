@@ -86,13 +86,25 @@ async function synthesizeTrack() {
 
         const rawAiText = data.candidates[0].content.parts[0].text;
         
-        // Extract JSON
-        const startIndex = rawAiText.indexOf('{');
-        const endIndex = rawAiText.lastIndexOf('}') + 1;
-        if (startIndex === -1) throw new Error("No JSON found");
+        /// --- ROBUST JSON PARSER ---
+        // Remove Markdown wrappers (``````) if they exist
+        let cleanJson = rawAiText.replace(/``````/g, "").trim();
         
-        const cleanJson = rawAiText.substring(startIndex, endIndex);
-        const songData = JSON.parse(cleanJson);
+        // Locate the first '{' and last '}' just to be safe (in case of extra preamble text)
+        const startIndex = cleanJson.indexOf('{');
+        const endIndex = cleanJson.lastIndexOf('}') + 1;
+        
+        if (startIndex === -1 || endIndex === 0) throw new Error("AI output contained no valid JSON object.");
+        
+        cleanJson = cleanJson.substring(startIndex, endIndex);
+        
+        let songData;
+        try {
+            songData = JSON.parse(cleanJson);
+        } catch (e) {
+            console.error("JSON Parse Failed on:", cleanJson);
+            throw new Error("AI sent invalid JSON. Try again.");
+        }
         
         log.innerText = `Searching YouTube: ${songData.track}...`;
         
@@ -185,6 +197,7 @@ document.addEventListener('visibilitychange', async () => {
     await requestWakeLock();
   }
 });
+
 
 
 
