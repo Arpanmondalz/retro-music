@@ -35,12 +35,13 @@ async function synthesizeTrack() {
     const log = document.getElementById('status-log');
     log.innerText = "CONTACTING AI...";
     
-    const energy = document.getElementById('energy').value;     // Calm <-> Intense
-    const valence = document.getElementById('valence').value;   // Sad <-> Happy
-    const nostalgia = document.getElementById('nostalgia').value; // Modern <-> Retro
-    const vocal = document.getElementById('vocal').value;       // Instrumental <-> Lyrical
-    const discovery = document.getElementById('discovery').value; // Pop <-> Hidden Gem
+    const energy = document.getElementById('energy').value;
+    const valence = document.getElementById('valence').value;
+    const nostalgia = document.getElementById('nostalgia').value; 
+    const vocal = document.getElementById('vocal').value;
+    const discovery = document.getElementById('discovery').value;
     const language = document.getElementById('lang-select').value;
+
     
     // Your Cloudflare Worker URL 
     const WORKER_URL = 'https://retro-music.arpanmondal-ae18.workers.dev';
