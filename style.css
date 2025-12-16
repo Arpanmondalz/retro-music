@@ -1,11 +1,14 @@
-/* --- VARIABLES (DARK MODE) --- */
+/* --- VARIABLES (CYBER-GLASS THEME) --- */
 :root {
-    --bg-color: #121212;      /* Deep black for OLED battery saving */
-    --ink-color: #e0e0e0;     /* Light text for contrast */
-    --panel-bg: rgba(30, 30, 30, 0.8); /* Dark Glass */
-    --accent-color: #ff6b6b;  /* Retro Coral Red */
-    --spool-color: #d0d0d0;   /* Metallic Silver */
-    --border-dim: #444444;    /* Subtle borders */
+    --bg-color: #000000; /* True Black for OLED Battery Save */
+    --ink-color: #e0e0e0;
+    --panel-bg: rgba(20, 20, 20, 0.6); /* Translucent dark glass */
+    --accent-color: #ff6c6c; /* Cyber Coral */
+    --accent-glow: rgba(255, 107, 107, 0.4);
+    --active-color: #00ff88; /* Toxic Green for "On" state */
+    --border-dim: rgba(255, 255, 255, 0.1);
+    --spool-color: #cfcfcf;
+    --spool-plastic: #e0e0e0;
 }
 
 * { box-sizing: border-box; }
@@ -13,183 +16,301 @@
 body {
     background-color: var(--bg-color);
     color: var(--ink-color);
-    font-family: 'Courier New', Courier, monospace;
-    margin: 0; 
+    font-family: 'Courier New', Courier, monospace; /* Monospaced for that Retro-Terminal feel */
+    margin: 0;
     width: 100vw;
-    min-height: 100vh; 
+    min-height: 100vh;
     overflow-x: hidden;
-    overflow-y: auto; 
-    display: flex; 
-    align-items: center; 
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
     justify-content: center;
     padding: 10px;
+    
+    /* Subtle CRT Scanline effect (very lightweight) */
+    background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+    background-size: 100% 4px;
 }
 
 /* --- MAIN DASHBOARD --- */
 .dashboard {
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    width: 95vw; 
-    max-width: 900px; 
-    gap: 15px; 
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Landscape Split */
+    width: 98vw;
+    max-width: 950px;
+    gap: 20px;
     padding: 10px;
-    height: auto; 
+    height: auto;
+    align-items: center;
 }
 
 /* --- VISUALS (LEFT) --- */
-.panel-left { 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center; 
-    position: relative; 
-}
-.cassette-wrapper { 
-    position: relative; 
-    width: 100%; 
-    aspect-ratio: 1.55; 
+.panel-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    /* Add a subtle glow behind the cassette */
+    filter: drop-shadow(0 0 20px rgba(255, 107, 107, 0.1));
 }
 
-/* THE MAGIC: Invert the white sketch to look like a dark blueprint */
-.cassette-bg { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: contain; 
-    filter: invert(1) brightness(0.9) contrast(1.2); 
-    mix-blend-mode: screen; /* Drops the black background */
+.cassette-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1.55;
+}
+
+.cassette-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Invert white sketch to Blueprint style */
+    filter: invert(1) brightness(0.8) contrast(1.5) hue-rotate(180deg);
+    mix-blend-mode: screen; 
     opacity: 0.9;
 }
 
+/* ANIMATED SPOOLS */
 .spool {
-    position: absolute; width: 14%; aspect-ratio: 1; top: 48%; transform: translateY(-50%);
-    background: var(--spool-color); 
-    border: 2px solid #000; 
-    border-radius: 50%; 
-    z-index: 10;
+    position: absolute; width: 14%; aspect-ratio: 1; 
+    top: 48%; transform: translateY(-50%);
+    background: #000; border-radius: 50%; z-index: 10;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Depth */
+    border: 1px solid var(--spool-plastic);
+    background-image: 
+        radial-gradient(circle at center, var(--spool-plastic) 35%, transparent 21%),
+        conic-gradient(from 0deg, 
+            var(--spool-plastic) 0deg 36deg, transparent 36deg 72deg,
+            var(--spool-plastic) 72deg 108deg, transparent 108deg 144deg,
+            var(--spool-plastic) 144deg 180deg, transparent 180deg 216deg,
+            var(--spool-plastic) 216deg 252deg, transparent 252deg 288deg,
+            var(--spool-plastic) 288deg 324deg, transparent 324deg 360deg
+        );
 }
-.spool::after {
-    content: ''; position: absolute; inset: 0;
-    background: repeating-conic-gradient(var(--spool-color) 0deg 20deg, #555 20deg 30deg);
-    border-radius: 50%; 
-    mask: radial-gradient(transparent 35%, black 36%); 
-    -webkit-mask: radial-gradient(transparent 35%, black 36%);
-}
-.left-spool { left: 23%; } 
+.left-spool { left: 23%; }
 .right-spool { right: 23%; }
-.playing .spool::after { animation: spin 3s linear infinite; }
-@keyframes spin { 100% { transform: rotate(360deg); } }
+.playing .spool { animation: spin 2s linear infinite; }
+/* Add extra definition to right spool */
+.right-spool {
+    box-shadow: inset 0 0 0 2px #000, 0 0 10px rgba(0, 0, 0, 0.3);
+}
+@keyframes spin { 100% { transform: translateY(-50%) rotate(360deg); } }
 
-/* VFD DISPLAY STYLE */
+/* VFD DIGITAL DISPLAY */
 .digital-label {
-    position: absolute; top: 14.8%; left: 58.5%; transform: translateX(-50%);
-    width: 53%; height: 14%; 
-    background: #000; /* Pure black for display */
+    position: absolute;
+    top: 14.8%;
+    left: 58.5%;
+    transform: translateX(-50%);
+    width: 53%;
+    height: 14%;
+    background: #000;
     border: 1px solid #333;
-    color: #f13a65; /* Glowing Green */
-    font-weight: bold; font-size: 0.75rem;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 4px; overflow: hidden; white-space: nowrap; z-index: 15;
-    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+    color: var(--active-color); /* Toxic Green Text */
+    font-weight: bold;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+    z-index: 15;
+    text-shadow: 0 0 5px rgba(0, 255, 136, 0.6); /* Neon Glow text */
     letter-spacing: 1px;
 }
 
-
-/* --- CONTROLS (RIGHT) --- */
+/* --- CONTROLS (RIGHT - GLASS PANEL) --- */
 .panel-right {
-    display: flex; 
-    flex-direction: column; 
-    padding: 12px; 
-    background: var(--panel-bg); /* Dark Glass */
-    border-radius: 12px; 
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: var(--panel-bg);
+    border-radius: 16px;
     border: 1px solid var(--border-dim);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px); /* The Glass Effect */
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    max-height: 90vh;
     overflow-y: auto;
-    max-height: 85vh; 
 }
 
-.header-row { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    border-bottom: 1px solid var(--border-dim); 
-    padding-bottom: 5px; 
-    margin-bottom: 10px;
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-dim);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
 }
-.header-title { font-size: 0.9rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: #fff; }
-.status-led { width: 10px; height: 10px; background: #444; border-radius: 50%; border: 1px solid #222; }
-.status-led.active { background: #ff4757; box-shadow: 0 0 10px #ff4757; border-color: #d63031; }
 
+.header-title {
+    font-size: 1.1rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
 
-/* --- COMPACT SLIDERS --- */
-.slider-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-.slider-row { display: flex; flex-direction: column; }
-.label-row { display: flex; justify-content: space-between; font-size: 0.6rem; font-weight: bold; margin-bottom: 2px; color: #aaa; }
+.status-led {
+    width: 12px;
+    height: 12px;
+    background: #333;
+    border-radius: 50%;
+    border: 1px solid #555;
+    transition: all 0.3s ease;
+}
+
+.status-led.active {
+    background: var(--active-color);
+    box-shadow: 0 0 15px var(--active-color);
+    border-color: #fff;
+}
+
+/* --- CYBER SLIDERS --- */
+.slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #888;
+    text-transform: uppercase;
+}
 
 input[type=range] {
-    -webkit-appearance: none; appearance: none; width: 100%; background: transparent; margin: 3px 0; height: 12px; cursor: pointer; display: block;
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+    margin: 5px 0;
+    cursor: pointer;
 }
 
-/* Chrome/Safari - Darker Tracks */
+/* Slider Track */
 input[type=range]::-webkit-slider-runnable-track {
-    width: 100%; height: 4px; 
-    background: #444; /* Dark track */
-    border: none; border-radius: 2px;
+    width: 100%;
+    height: 4px;
+    background: #333;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
 }
+
+/* Slider Thumb (The glowing dot) */
 input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%;
-    background: var(--accent-color); /* Glowing Thumb */
-    border: 2px solid #121212;
-    margin-top: -5px; 
-    box-shadow: 0 0 5px var(--accent-color);
+    -webkit-appearance: none;
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    margin-top: -7px; /* Center it */
+    box-shadow: 0 0 10px var(--accent-glow);
+    border: 2px solid #fff;
+    transition: transform 0.1s;
 }
 
-/* Firefox */
-input[type=range]::-moz-range-track { width: 100%; height: 4px; background: #444; border: none; border-radius: 2px; }
-input[type=range]::-moz-range-thumb { height: 14px; width: 14px; border: none; border-radius: 50%; background: var(--accent-color); border: 2px solid #121212; box-shadow: 0 0 5px var(--accent-color); }
+input[type=range]:active::-webkit-slider-thumb {
+    transform: scale(1.2);
+    background: #fff;
+}
 
+/* --- DROPDOWN --- */
+.option-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-dim);
+}
 
-/* --- LANGUAGE SELECTOR --- */
-.option-row { display: flex; gap: 5px; align-items: center; font-weight: bold; font-size: 0.7rem; margin-bottom: 10px; color: #aaa; }
-select { 
-    padding: 5px; border-radius: 4px; 
-    border: 1px solid var(--border-dim); 
-    background: #222; color: #fff; /* Dark dropdown */
-    flex-grow: 1; font-weight: bold; font-size: 0.65rem;
+.option-row label {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #aaa;
+}
+
+select {
+    flex-grow: 1;
+    padding: 8px;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    outline: none;
 }
 
 /* --- BUTTONS --- */
-.btn-group { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 5px; }
-button { 
-    flex: 1; min-width: 60px; padding: 10px 4px; 
-    font-weight: bold; font-size: 0.65rem; 
-    border: 1px solid var(--border-dim); 
-    background: #333; color: #fff; 
-    border-radius: 5px; cursor: pointer; 
-    box-shadow: 0 2px 0 #000; 
-    transition: all 0.1s;
+.btn-group {
+    display: flex;
+    gap: 10px;
 }
-button:active { transform: translate(0, 2px); box-shadow: none; }
-.btn-primary { 
-    background: var(--accent-color); 
-    color: #121212; /* Dark text on bright button */
+
+button {
+    flex: 1;
+    padding: 12px;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    border: 1px solid var(--border-dim);
+    background: rgba(255,255,255,0.05);
+    color: #eee;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    backdrop-filter: blur(4px);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background: var(--accent-color);
+    color: #000;
     border: none;
-    box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
-}
-.btn-stop { 
-    color: #ff4757; border-color: #ff4757; background: transparent; 
+    box-shadow: 0 0 15px var(--accent-glow);
 }
 
+.btn-stop {
+    border-color: #ff4757;
+    color: #ff4757;
+}
 
-#status-log { margin-top: 5px; font-size: 0.6rem; color: #777; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.btn-stop:active {
+    background: #ff4757;
+    color: #fff;
+}
 
-/* --- INVISIBLE SCANNER --- */
-#scanner-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0; pointer-events: none; display: none; }
+/* --- LOG --- */
+#status-log {
+    margin-top: 10px;
+    font-size: 0.7rem;
+    color: #666;
+    text-align: center;
+    font-style: italic;
+    min-height: 1rem;
+}
+
+/* --- HIDDEN ELEMENTS --- */
+#scanner-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1; opacity: 0; pointer-events: none;
+}
+
 #player-hide { display: none; }
 
-
-/* --- MOBILE PORTRAIT --- */
-@media (max-width: 600px) and (orientation: portrait) {
-    .dashboard { grid-template-columns: 1fr; gap: 10px; }
-    .panel-left { width: 80%; margin: 0 auto; }
+/* --- RESPONSIVE --- */
+@media (max-width: 700px) and (orientation: portrait) {
+    .dashboard { grid-template-columns: 1fr; }
+    .panel-right { max-height: none; }
 }
