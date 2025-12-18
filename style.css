@@ -298,6 +298,20 @@ button:active {
 
 /* --- RESPONSIVE --- */
 @media (max-width: 700px) and (orientation: portrait) {
-    .dashboard { grid-template-columns: 1fr; }
-    .panel-right { max-height: none; }
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    /* Flip order: Controls (Right Panel) go to top */
+    .panel-right {
+        max-height: none;
+        order: -1; 
+    }
+
+    /* Visuals (Left Panel) stay in default order (0), so it goes to bottom */
+    .panel-left {
+        order: 0;
+    }
 }
+
+
